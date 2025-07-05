@@ -4,10 +4,12 @@ const User = require('../models/User');
 require('dotenv').config();
 
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: process.env.EMAIL_HOST,
+  port: process.env.EMAIL_PORT,
+  secure: process.env.EMAIL_SECURE === 'true',
   auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_PASS
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
   }
 });
 
@@ -31,7 +33,7 @@ exports.sendQuoteRequest = async (req, res) => {
     // Send email to admins
     const adminEmails = getAdminEmails();
     const mailOptions = {
-      from: `"${quote.name}" <${quote.email}>`,
+      from: process.env.EMAIL_USER,
       to: adminEmails[0] || process.env.RECEIVER_EMAIL, // fallback to RECEIVER_EMAIL if no admins
       cc: adminEmails.length > 1 ? adminEmails.slice(1) : undefined,
       subject: `Quote Request from ${quote.name} on Adesola Plastics Store`,
@@ -43,7 +45,7 @@ exports.sendQuoteRequest = async (req, res) => {
     // Send confirmation email to customer
     await transporter.sendMail({
       to: quote.email,
-      from: process.env.GMAIL_USER,
+      from: process.env.EMAIL_USER,
       subject: 'We Received Your Quote Request on Adesola Plastics Store',
       html: `<h2>Thank you for submitting a quote request through the Adesola Plastics Store website!</h2><p>Dear ${quote.name},</p><p>We have received your request for <strong>${quote.service}</strong> and we are currently reviewing the details of your request to ensure we provide the most accurate and tailored response.</p><p>One of our team will contact you shortly to discuss your requirements and the best solutions available. We appreciate your interest and trust in Adesola Plastics Store.</p><p>If you have any additional information you'd like to share in the meantime, please feel free to reply to this email.</p><p><strong>Your message:</strong> ${quote.message}</p><p>Kind regards,<br/><strong>Adesola Plastics Store Team</strong></p,<br/><br/><p><em>If you did not request a quote, please ignore this email.</em></p>`
     });
@@ -92,7 +94,7 @@ exports.updateQuoteRequest = async (req, res) => {
       const detailsText = Object.keys(req.body).filter(k => k !== 'status').map(k => `<p><strong>${k}:</strong> ${req.body[k]}</p>`).join('');
       await transporter.sendMail({
         to: updated.email,
-        from: process.env.GMAIL_USER,
+        from: process.env.EMAIL_USER,
         subject: 'Your Quote Request Has Been Updated',
         html: `
         <p>Hi ${updated.name},</p>

@@ -26,18 +26,20 @@ exports.register = async (req, res) => {
     const user = await User.create({ name, email, password, role });
     const token = generateToken(user);
 
-    // --- EMAIL NOTIFICATIONS ---
+    // --- EMAIL NOTIFICATIONS (Zoho SMTP) ---
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      host: process.env.EMAIL_HOST,
+      port: process.env.EMAIL_PORT,
+      secure: process.env.EMAIL_SECURE === 'true',
       auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_PASS
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
       }
     });
     // Send welcome email to user
     await transporter.sendMail({
       to: user.email,
-      from: process.env.GMAIL_USER,
+      from: process.env.EMAIL_USER,
       subject: 'Welcome to Adesola Plastics Store',
       html: `<p>Hi ${user.name},</p><p>Welcome to Adesola Plastics Store! Your account has been created successfully.</p><br /> You can now login using this <a href="https://adesolaplasticsstore.com.ng/login">link</a>`
     });
@@ -45,7 +47,7 @@ exports.register = async (req, res) => {
     if (process.env.ADMIN_EMAIL) {
       await transporter.sendMail({
         to: process.env.ADMIN_EMAIL,
-        from: process.env.GMAIL_USER,
+        from: process.env.EMAIL_USER,
         subject: 'New User Registration on Adesola Plastics Store',
         html: `<p>A new user has registered on Adesola Plastics Store website:</p><ul><li>Name: ${user.name}</li><li>Email: ${user.email}</li><li>Role: ${user.role || 'customer'}</li></ul>`
       });
@@ -82,18 +84,20 @@ exports.requestPasswordReset = async (req, res) => {
     user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
     await user.save();
 
-    // Send email
+    // Send email (Zoho SMTP)
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      host: process.env.EMAIL_HOST,
+      port: process.env.EMAIL_PORT,
+      secure: process.env.EMAIL_SECURE === 'true',
       auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_PASS
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
       }
     });
     const resetUrl = `${process.env.FRONTEND_URL || 'https://itservicepro-backend.onrender.com'}/reset-password/${token}`;
     await transporter.sendMail({
       to: user.email,
-      from: process.env.GMAIL_USER,
+      from: process.env.EMAIL_USER,
       subject: 'Password Reset',
       html: `<p>You requested a password reset.</p><p>Click <a href="${resetUrl}">here</a> to reset your password. This link expires in 1 hour.</p>`
     });

@@ -5,11 +5,14 @@ const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 require('dotenv').config();
 
+// Use Zoho SMTP for all newsletter emails
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: process.env.EMAIL_HOST,
+  port: process.env.EMAIL_PORT,
+  secure: process.env.EMAIL_SECURE === 'true',
   auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_PASS
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
   }
 });
 
@@ -43,7 +46,7 @@ exports.subscribe = async (req, res) => {
     const unsubscribeUrl = `${process.env.FRONTEND_URL || 'https://adesolaplasticsstore.com.ng'}/api/newsletter/unsubscribe/${unsubscribeToken}`;
     await transporter.sendMail({
       to: email,
-      from: process.env.GMAIL_USER,
+      from: process.env.EMAIL_USER,
       subject: 'Newsletter Subscription Confirmed',
       html: `
         <div style="max-width:520px;margin:auto;border-radius:8px;border:1px solid #e0e0e0;background:#fff;overflow:hidden;font-family:sans-serif;">
@@ -148,7 +151,7 @@ exports.sendNewsletter = async (req, res) => {
     const newsletter = await Newsletter.create({ subject, content, recipients: emails, sentAt: new Date(), sentBy: req.user?._id, status: 'sent' });
     // Send email to all
     await transporter.sendMail({
-      from: process.env.GMAIL_USER,
+      from: process.env.EMAIL_USER,
       to: emails[0],
       bcc: emails.length > 1 ? emails.slice(1) : undefined,
       subject,

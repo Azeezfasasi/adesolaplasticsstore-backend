@@ -8,12 +8,14 @@ require('dotenv').config();
 
 // Nodemailer transporter (reuse config from userController.js)
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: process.env.EMAIL_HOST,
+    port: process.env.EMAIL_PORT,
+    secure: process.env.EMAIL_SECURE === 'true', // true for 465, false for 587
     auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_PASS
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS
     }
-});
+  });
 
 // Helper to get admin emails from .env (comma-separated)
 function getAdminEmails() {
@@ -27,7 +29,7 @@ async function sendOrderNotification({ to, subject, html, cc, bcc }) {
         to,
         cc,
         bcc,
-        from: process.env.GMAIL_USER,
+        from: process.env.EMAIL_USER,
         subject,
         html
     });
@@ -46,7 +48,7 @@ async function getNextSequenceValue(sequenceName) {
 // Helper function to format the order number
 function formatOrderNumber(sequenceNumber) {
     const paddedSequence = String(sequenceNumber).padStart(9, '0');
-    return `ITS${paddedSequence}`;
+    return `APS${paddedSequence}`;
 }
 
 exports.createOrder = async (req, res) => {
