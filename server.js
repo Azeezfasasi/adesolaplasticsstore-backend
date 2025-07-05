@@ -20,6 +20,7 @@ const PORT = process.env.PORT || 5000;
 app.use(cors({
   origin: [
     'https://adesolaplasticsstore.netlify.app',
+    'https://adesolaplasticsstore.com.ng',
     'http://localhost:5173'
   ], // your frontend URL
   credentials: true, // if you use cookies/auth
