@@ -9,8 +9,8 @@ require('dotenv').config();
 // Nodemailer transporter (reuse config from userController.js)
 const transporter = nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
-    port: process.env.EMAIL_PORT,
-    secure: process.env.EMAIL_SECURE === 'true', // true for 465, false for 587
+    port: Number(process.env.EMAIL_PORT), // Ensure port is a number
+    secure: process.env.EMAIL_SECURE === 'true', // Ensure secure is a boolean
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS
