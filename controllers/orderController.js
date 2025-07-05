@@ -459,10 +459,10 @@ exports.updateOrderStatus = async (req, res) => {
                 <p>Our team is now preparing your items for shipment. Once your order is dispatched, we will send you another update with tracking details.</p>
                 <p>If you have any questions or need assistance, feel free to reach out to us.</p>
                 <br />
-                <p><strong>Thank you for shopping with IT Service Pro.</strong></p>
+                <p><strong>Thank you for shopping with Adesola Plastics Store.</strong></p>
                 <p>We appreciate your trust and look forward to serving you again.</p>
                 <p>Warm regards,</p>
-                <p>IT Service Pro Team - <a href="https://adesolaplasticsstore.com.ng/app/trackorder">Track your order status here.</a></p>
+                <p>Adesola Plastics Store - <a href="https://adesolaplasticsstore.com.ng/app/trackorder">Track your order status here.</a></p>
             `;
             const adminOrderDetailsHtml = `
                 <h3>Hi Adesola Plastics Store</h3>
