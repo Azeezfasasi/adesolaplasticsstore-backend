@@ -38,16 +38,16 @@ exports.register = async (req, res) => {
     await transporter.sendMail({
       to: user.email,
       from: process.env.GMAIL_USER,
-      subject: 'Welcome to IT ServicePro',
-      html: `<p>Hi ${user.name},</p><p>Welcome to IT ServicePro! Your account has been created successfully.</p>`
+      subject: 'Welcome to Adesola Plastics Store',
+      html: `<p>Hi ${user.name},</p><p>Welcome to Adesola Plastics Store! Your account has been created successfully.</p><br /> You can now login using this <a href="https://adesolaplasticsstore.com.ng/login">link</a>`
     });
     // Send notification email to admin
     if (process.env.ADMIN_EMAIL) {
       await transporter.sendMail({
         to: process.env.ADMIN_EMAIL,
         from: process.env.GMAIL_USER,
-        subject: 'New User Registration',
-        html: `<p>A new user has registered:</p><ul><li>Name: ${user.name}</li><li>Email: ${user.email}</li><li>Role: ${user.role || 'customer'}</li></ul>`
+        subject: 'New User Registration on Adesola Plastics Store',
+        html: `<p>A new user has registered on Adesola Plastics Store website:</p><ul><li>Name: ${user.name}</li><li>Email: ${user.email}</li><li>Role: ${user.role || 'customer'}</li></ul>`
       });
     }
     // --- END EMAIL NOTIFICATIONS ---

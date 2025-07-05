@@ -212,35 +212,67 @@ exports.createOrder = async (req, res) => {
             // Fetch user details for email
             const user = await User.findById(req.user._id);
             const adminEmails = getAdminEmails();
-            const orderDetailsHtml = `
-                <h2>Hi ${user.name}</h2>
-                <p>Thank you for placing your order with IT Service Pro with order number: ${createdOrder.orderNumber}</p>
-                <p>We have received your request and are currently processing it.</p>
-                <br />
-                <h3>Order Summary</h3>
-                <p><strong>Order Number:</strong> ${createdOrder.orderNumber}</p>
-                <p><strong>Status:</strong> ${createdOrder.status}</p>
-                <p><strong>Total Amount:</strong> ₦${createdOrder.totalPrice}</p>
-                <p><strong>Payment Method:</strong> ₦${createdOrder.paymentMethod}</p>
-                <p><strong>Payment Status:</strong> ${createdOrder.isPaid ? 'Paid' : 'Not Paid'}</p>
-                <br />
-                <h3>Items Ordered</h3>
-                <ul>
-                    ${createdOrder.orderItems.map(item => `<li>${item.name} x ${item.quantity} (₦${item.price})</li>`).join('')}
-                </ul>
-                <br />
-                <h3>Shipping Details</h3>
-                <p>${createdOrder.shippingAddress.address1}, ${createdOrder.shippingAddress.city}, ${createdOrder.shippingAddress.zipCode}, ${createdOrder.shippingAddress.country}</p>
-                <p>We will notify you once your order is shipped. For mean time, you can track your order status on <a href="https://itservicepro.netlify.app/app/trackorder">our website</a>.</p>
-                <p>Thank you for shopping with us!</p>
-                <p>Best regards,</p>
-                <p>IT Service Pro Team - <a href="https://itservicepro.netlify.app">Visit our website for more details.</a></p>
+
+            // Customer email template
+            const customerOrderDetailsHtml = `
+                <div style="font-family: Arial, sans-serif; background: #f8f9fa; padding: 32px; color: #222;">
+                  <div style="max-width: 600px; margin: 0 auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px #eee; padding: 32px;">
+                    <h2 style="color: #e67e22;">Thank you for your order, ${user.name}!</h2>
+                    <p style="font-size: 16px;">We have received your order <b>${createdOrder.orderNumber}</b> and are currently processing it.</p>
+                    <hr style="margin: 24px 0; border: none; border-top: 1px solid #eee;" />
+                    <h3 style="color: #333;">Order Summary</h3>
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 16px;">
+                      <tr><td style="padding: 6px 0;">Order Number:</td><td style="padding: 6px 0;"><b>${createdOrder.orderNumber}</b></td></tr>
+                      <tr><td>Status:</td><td>${createdOrder.status}</td></tr>
+                      <tr><td>Total Amount:</td><td><b>₦${createdOrder.totalPrice}</b></td></tr>
+                      <tr><td>Payment Method:</td><td>${createdOrder.paymentMethod}</td></tr>
+                      <tr><td>Payment Status:</td><td>${createdOrder.isPaid ? 'Paid' : 'Not Paid'}</td></tr>
+                    </table>
+                    <h4 style="margin-top: 24px; color: #333;">Items Ordered</h4>
+                    <ul style="padding-left: 20px;">
+                      ${createdOrder.orderItems.map(item => `<li>${item.name} x ${item.quantity} (₦${item.price})</li>`).join('')}
+                    </ul>
+                    <h4 style="margin-top: 24px; color: #333;">Shipping Details</h4>
+                    <p style="margin-bottom: 0;">${createdOrder.shippingAddress.address1}, ${createdOrder.shippingAddress.city}, ${createdOrder.shippingAddress.zipCode}, ${createdOrder.shippingAddress.country}</p>
+                    <p style="margin-top: 24px;">You can track your order status on <a href="https://adesolaplasticsstore.com.ng/app/trackorder" style="color: #e67e22;">our website</a>.</p>
+                    <p style="margin-top: 32px; font-size: 15px; color: #888;">Thank you for shopping with us!<br/>Adesola Plastics Store</p>
+                  </div>
+                </div>
             `;
+
+            // Admin email template
+            const adminOrderDetailsHtml = `
+                <div style="font-family: Arial, sans-serif; background: #f8f9fa; padding: 32px; color: #222;">
+                  <div style="max-width: 600px; margin: 0 auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px #eee; padding: 32px;">
+                    <h2 style="color: #e67e22;">New Order Placed</h2>
+                    <p style="font-size: 16px;">A new order has been placed on Adesola Plastics Store.</p>
+                    <hr style="margin: 24px 0; border: none; border-top: 1px solid #eee;" />
+                    <h3 style="color: #333;">Order Details</h3>
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 16px;">
+                      <tr><td style="padding: 6px 0;">Order Number:</td><td style="padding: 6px 0;"><b>${createdOrder.orderNumber}</b></td></tr>
+                      <tr><td>Status:</td><td>${createdOrder.status}</td></tr>
+                      <tr><td>Total Amount:</td><td><b>₦${createdOrder.totalPrice}</b></td></tr>
+                      <tr><td>Payment Method:</td><td>${createdOrder.paymentMethod}</td></tr>
+                      <tr><td>Payment Status:</td><td>${createdOrder.isPaid ? 'Paid' : 'Not Paid'}</td></tr>
+                    </table>
+                    <h4 style="margin-top: 24px; color: #333;">Customer Details</h4>
+                    <p><b>Name:</b> ${user.name} <br/><b>Email:</b> ${user.email}</p>
+                    <h4 style="margin-top: 24px; color: #333;">Items Ordered</h4>
+                    <ul style="padding-left: 20px;">
+                      ${createdOrder.orderItems.map(item => `<li>${item.name} x ${item.quantity} (₦${item.price})</li>`).join('')}
+                    </ul>
+                    <h4 style="margin-top: 24px; color: #333;">Shipping Details</h4>
+                    <p style="margin-bottom: 0;">${createdOrder.shippingAddress.address1}, ${createdOrder.shippingAddress.city}, ${createdOrder.shippingAddress.zipCode}, ${createdOrder.shippingAddress.country}</p>
+                    <p style="margin-top: 32px; font-size: 15px; color: #888;">Order placed via Adesola Plastics Store website.</p>
+                  </div>
+                </div>
+            `;
+
             // Email to customer
             await sendOrderNotification({
                 to: user.email,
-                subject: `Your Order Confirmation - ${createdOrder.orderNumber} | IT Service Pro`,
-                html: orderDetailsHtml
+                subject: `Your Order Confirmation - ${createdOrder.orderNumber} | Adesola Plastics Store`,
+                html: customerOrderDetailsHtml
             });
             // Email to all admins (as to/cc)
             if (adminEmails.length > 0) {
@@ -248,7 +280,7 @@ exports.createOrder = async (req, res) => {
                     to: adminEmails[0],
                     cc: adminEmails.length > 1 ? adminEmails.slice(1) : undefined,
                     subject: `New Order Placed - ${createdOrder.orderNumber}`,
-                    html: `<p>New order placed by ${user.name} (${user.email})</p>` + orderDetailsHtml
+                    html: adminOrderDetailsHtml
                 });
             }
         } catch (emailErr) {
@@ -351,6 +383,14 @@ exports.updateOrderToDelivered = async (req, res) => {
                 <p><strong>Status:</strong> Delivered</p>
                 <p><strong>Total:</strong> ₦${order.totalPrice}</p>
             `;
+            const adminOrderDetailsHtml = `
+                <p>Hi Adesola Plastics Store,</p>
+                <h2>Order Delivered - ${order.orderNumber}</h2>
+                <p>Order for ${user.name} (${user.email}) has been marked as <strong>Delivered</strong>.</p>
+                <p><strong>Order Number:</strong> ${order.orderNumber}</p>
+                <p><strong>Status:</strong> Delivered</p>
+                <p><strong>Total:</strong> ₦${order.totalPrice}</p>
+            `;
             // Email to customer
             await sendOrderNotification({
                 to: user.email,
@@ -363,7 +403,7 @@ exports.updateOrderToDelivered = async (req, res) => {
                     to: adminEmails[0],
                     cc: adminEmails.length > 1 ? adminEmails.slice(1) : undefined,
                     subject: `Order Delivered - ${order.orderNumber}`,
-                    html: orderDetailsHtml
+                    html: adminOrderDetailsHtml
                 });
             }
         } catch (emailErr) {
@@ -422,7 +462,19 @@ exports.updateOrderStatus = async (req, res) => {
                 <p><strong>Thank you for shopping with IT Service Pro.</strong></p>
                 <p>We appreciate your trust and look forward to serving you again.</p>
                 <p>Warm regards,</p>
-                <p>IT Service Pro Team - <a href="https://itservicepro.netlify.app/app/trackorder">Track your order status here.</a></p>
+                <p>IT Service Pro Team - <a href="https://adesolaplasticsstore.com.ng/app/trackorder">Track your order status here.</a></p>
+            `;
+            const adminOrderDetailsHtml = `
+                <h3>Hi Adesola Plastics Store</h3>
+                <p>This is a confirmation that order ${order.orderNumber} has been updated.
+                <br />
+                <h2>Order Details</h2>
+                <p><strong>Customer:</strong> ${user.name}</p>
+                <p><strong>Order Number:</strong> ${order.orderNumber}</p>
+                <p><strong>Current Status:</strong> ${order.status}</p>
+                <p><strong>Order Total:</strong> ₦${order.totalPrice}</p>
+                <p>You can always manage all orders from your dashboard</p>
+                <p>Warm regards,</p>
             `;
             // Email to customer
             await sendOrderNotification({
@@ -436,7 +488,7 @@ exports.updateOrderStatus = async (req, res) => {
                     to: adminEmails[0],
                     cc: adminEmails.length > 1 ? adminEmails.slice(1) : undefined,
                     subject: `Order Status Updated - ${order.orderNumber} | ${order.status}`,
-                    html: orderDetailsHtml
+                    html: adminOrderDetailsHtml
                 });
             }
         } catch (emailErr) {

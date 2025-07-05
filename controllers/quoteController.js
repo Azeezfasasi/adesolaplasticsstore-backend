@@ -1,5 +1,6 @@
 const nodemailer = require('nodemailer');
 const QuoteRequest = require('../models/QuoteRequest');
+const User = require('../models/User'); 
 require('dotenv').config();
 
 const transporter = nodemailer.createTransport({
@@ -33,9 +34,9 @@ exports.sendQuoteRequest = async (req, res) => {
       from: `"${quote.name}" <${quote.email}>`,
       to: adminEmails[0] || process.env.RECEIVER_EMAIL, // fallback to RECEIVER_EMAIL if no admins
       cc: adminEmails.length > 1 ? adminEmails.slice(1) : undefined,
-      subject: `Quote Request from ${quote.name} on IT Service Pro`,
-      text: `Service: ${quote.service}\nMessage: ${quote.message}\nFrom: ${quote.name} <${quote.email}>`,
-      html: `<p><strong>Hello Admin,</strong></p><p>A new quote request has just been submitted through the IT Service Pro website. Please review the details below:</p><p><strong>Service Requested:</strong> ${quote.service}</p><p><strong>Message:</strong> ${quote.message}</p><p><strong>From:</strong> ${quote.name} (${quote.email}) (${quote.phone})</p><br /><p>Please <a href="https://itservicepro.netlify.app/login">log in</a> to your admin dashboard to follow up or assign this request to a team member.</p>`
+      subject: `Quote Request from ${quote.name} on Adesola Plastics Store`,
+      text: `Service/Product Category: ${quote.service}\nMessage: ${quote.message}\nFrom: ${quote.name} <${quote.email}>`,
+      html: `<p><strong>Hello Admin,</strong></p><p>A new quote request has just been submitted through the Adesola Pastics Store website. Please review the details below:</p><p><strong>Selrvice/Product Category Requested:</strong> ${quote.service}</p><p><strong>Message:</strong> ${quote.message}</p><p><strong>From:</strong> ${quote.name} (${quote.email}) (${quote.phone})</p><br /><p>Please <a href="https://adesolaplasticsstore.com.ng/login">log in</a> to your admin dashboard to follow up or assign this request to a team member.</p>`
     };
     await transporter.sendMail(mailOptions);
 
@@ -43,8 +44,8 @@ exports.sendQuoteRequest = async (req, res) => {
     await transporter.sendMail({
       to: quote.email,
       from: process.env.GMAIL_USER,
-      subject: 'We Received Your Quote Request on IT Service Pro',
-      html: `<h2>Thank you for submitting a quote request through the IT Service Pro website!</h2><p>Dear ${quote.name},</p><p>We have received your request for <strong>${quote.service}</strong> and we are currently reviewing the details of your request to ensure we provide the most accurate and tailored response.</p><p>One of our IT experts will contact you shortly to discuss your requirements and the best solutions available. We appreciate your interest and trust in IT Service Pro.</p><p>If you have any additional information you'd like to share in the meantime, please feel free to reply to this email.</p><p><strong>Your message:</strong> ${quote.message}</p><p>Kind regards,<br/><strong>IT Service Pro Team</strong></p,<br/><br/><p><em>If you did not request a quote, please ignore this email.</em></p>`
+      subject: 'We Received Your Quote Request on Adesola Plastics Store',
+      html: `<h2>Thank you for submitting a quote request through the Adesola Plastics Store website!</h2><p>Dear ${quote.name},</p><p>We have received your request for <strong>${quote.service}</strong> and we are currently reviewing the details of your request to ensure we provide the most accurate and tailored response.</p><p>One of our team will contact you shortly to discuss your requirements and the best solutions available. We appreciate your interest and trust in Adesola Plastics Store.</p><p>If you have any additional information you'd like to share in the meantime, please feel free to reply to this email.</p><p><strong>Your message:</strong> ${quote.message}</p><p>Kind regards,<br/><strong>Adesola Plastics Store Team</strong></p,<br/><br/><p><em>If you did not request a quote, please ignore this email.</em></p>`
     });
 
     res.status(200).json({ message: 'Quote request sent and saved successfully!' });
@@ -93,7 +94,9 @@ exports.updateQuoteRequest = async (req, res) => {
         to: updated.email,
         from: process.env.GMAIL_USER,
         subject: 'Your Quote Request Has Been Updated',
-        html: `<h2>Your Quote Request Update</h2>${statusText}${detailsText}<p>If you have questions, reply to this email.</p>`
+        html: `
+        <p>Hi ${updated.name},</p>
+        <h2>Your Quote Request Update</h2>${statusText}${detailsText}<p>If you have questions, reply to this email or track ypu order status using <a href="https://adesolaplasticsstore.com.ng/app/trackorder">this link</a> with the order tracking number provided.</p>`
       });
     }
     res.status(200).json(updated);
