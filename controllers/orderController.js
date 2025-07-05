@@ -256,6 +256,7 @@ exports.createOrder = async (req, res) => {
                       <tr><td>Total Amount:</td><td><b>₦${createdOrder.totalPrice}</b></td></tr>
                       <tr><td>Payment Method:</td><td>${createdOrder.paymentMethod}</td></tr>
                       <tr><td>Payment Status:</td><td>${createdOrder.isPaid ? 'Paid' : 'Not Paid'}</td></tr>
+                      <tr><td>Customer's Note:</td><td>${createdOrder.shippingAddress.note}</td></tr>
                     </table>
                     <h4 style="margin-top: 24px; color: #333;">Customer Details</h4>
                     <p><b>Name:</b> ${user.name} <br/><b>Email:</b> ${user.email}</p>

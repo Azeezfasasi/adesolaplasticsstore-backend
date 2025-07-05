@@ -116,10 +116,10 @@ const orderSchema = mongoose.Schema({
         default: 'Pending',
         enum: ['Pending', 'Processing', 'Refunded', 'Shipped', 'Delivered', 'Cancelled'] // Enforce valid statuses
     },
-    notes: { // Admin notes or customer messages
-        type: String,
-        default: '',
-    },
+    // notes: { // Admin notes or customer messages
+    //     type: String,
+    //     default: '',
+    // },
     bankReference: { // Reference number for bank transfers
         type: String,
     },
