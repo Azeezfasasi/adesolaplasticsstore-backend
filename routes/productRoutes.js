@@ -7,9 +7,9 @@ const { auth, authorizeRoles } = require('../middleware/auth');
 router.get('/', productController.getAllProducts);
 router.get('/featured', productController.getFeaturedProducts);
 router.get('/sale', productController.getSaleProducts);
+router.get('/count', productController.getProductCount);
 router.get('/:id', productController.getProductById);
 router.get('/slug/:slug', productController.getProductBySlug);
-router.get('/count', productController.getProductCount);
 
 // Protected routes (User/Admin access)
 router.post('/:id/reviews', auth, productController.addProductReview);
