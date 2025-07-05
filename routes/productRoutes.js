@@ -9,6 +9,7 @@ router.get('/featured', productController.getFeaturedProducts);
 router.get('/sale', productController.getSaleProducts);
 router.get('/:id', productController.getProductById);
 router.get('/slug/:slug', productController.getProductBySlug);
+router.get('/count', productController.getProductCount);
 
 // Protected routes (User/Admin access)
 router.post('/:id/reviews', auth, productController.addProductReview);
@@ -37,7 +38,7 @@ router.delete('/:id/images/:imageIndex', auth, authorizeRoles, productController
 router.put('/:id/featured-image', auth, authorizeRoles, productController.setFeaturedImage);
 router.put('/:id/inventory', auth, authorizeRoles, productController.updateInventory);
 router.post('/bulk/status', auth, authorizeRoles, productController.bulkUpdateStatus);
-router.get('/count', productController.getProductCount);
+
 
 
 module.exports = router;
