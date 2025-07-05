@@ -37,6 +37,7 @@ router.delete('/:id/images/:imageIndex', auth, authorizeRoles, productController
 router.put('/:id/featured-image', auth, authorizeRoles, productController.setFeaturedImage);
 router.put('/:id/inventory', auth, authorizeRoles, productController.updateInventory);
 router.post('/bulk/status', auth, authorizeRoles, productController.bulkUpdateStatus);
+router.get('/count', productController.getProductCount);
 
 
 module.exports = router;

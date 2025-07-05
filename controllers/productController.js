@@ -702,3 +702,12 @@ exports.addProductReview = async (req, res) => {
     });
   }
 };
+
+exports.getProductCount = async (req, res) => {
+  try {
+    const count = await Product.countDocuments();
+    res.json({ count });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to get product count' });
+  }
+};
