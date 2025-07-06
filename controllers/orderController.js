@@ -552,7 +552,7 @@ exports.updateOrderPaymentStatus = async (req, res) => {
     try {
         const { status } = req.body;
         if (!status || !['Paid', 'Processing', 'Not Paid'].includes(status)) {
-            return res.status(400).json({ message: 'Invalid payment status.' });
+            return res.status(400).json({ message: 'Invalid payment status.' }); 
         }
 
         const order = await Order.findById(req.params.id);
