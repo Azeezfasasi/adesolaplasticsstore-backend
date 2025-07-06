@@ -125,6 +125,11 @@ const orderSchema = mongoose.Schema({
     bankReference: { // Reference number for bank transfers
         type: String,
     },
+    paymentStatus: {
+        type: String,
+        enum: ['Paid', 'Processing', 'Not Paid'],
+        default: 'Not Paid'
+    },
     createdAt: {
         type: Date,
         default: Date.now,
