@@ -21,6 +21,9 @@ router.put('/:id/deliver', auth, authorizeRoles, orderController.updateOrderToDe
 // PUT /api/orders/:id/status
 router.put('/:id/status', auth, authorizeRoles, orderController.updateOrderStatus);
 
+// PUT /api/orders/:id/payment-status
+router.put('/:id/payment-status', auth, authorizeRoles, orderController.updateOrderPaymentStatus);
+
 // DELETE /api/orders/:id
 router.delete('/:id', auth, authorizeRoles, orderController.deleteOrder);
 

@@ -547,3 +547,36 @@ exports.getPublicOrderStatus = async (req, res) => {
         res.status(500).json({ message: 'Failed to retrieve order status.', details: error.message });
     }
 };
+
+exports.updateOrderPaymentStatus = async (req, res) => {
+    try {
+        const { status } = req.body;
+        if (!status || !['Paid', 'Processing', 'Not Paid'].includes(status)) {
+            return res.status(400).json({ message: 'Invalid payment status.' });
+        }
+
+        const order = await Order.findById(req.params.id);
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found.' });
+        }
+
+        order.paymentStatus = status;
+        // Optionally update isPaid and paidAt fields
+        if (status === 'Paid') {
+            order.isPaid = true;
+            order.paidAt = order.paidAt || Date.now();
+        } else {
+            order.isPaid = false;
+            order.paidAt = null;
+        }
+
+        const updatedOrder = await order.save();
+
+        // Optionally: send payment confirmation email here
+
+        res.status(200).json({ message: `Payment status updated to ${status}!`, order: updatedOrder });
+    } catch (error) {
+        console.error('Error updating payment status:', error);
+        res.status(500).json({ message: 'Failed to update payment status', details: error.message });
+    }
+};

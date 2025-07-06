@@ -37,7 +37,9 @@ const shippingAddressSchema = mongoose.Schema({
 
 const paymentResultSchema = mongoose.Schema({
     id: { type: String },
-    status: { type: String }, // e.g., 'succeeded', 'pending', 'failed'
+    status: {
+        type: String,
+    }, // e.g., 'succeeded', 'pending', 'failed'
     update_time: { type: String },
     email_address: { type: String }, 
     // Add more fields relevant to your chosen payment gateway
